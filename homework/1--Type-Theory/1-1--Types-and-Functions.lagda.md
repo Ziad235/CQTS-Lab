@@ -80,7 +80,7 @@ A function `f : A → B` may be thought of in two ways:
 Here is our first Agda function: the identity function of type `ℕ → ℕ`.
 ```
 idℕ : ℕ → ℕ
-idℕ x = x
+idℕ x = x 
 ```
 
 Functions are defined by placing a fresh variable name to the left of
@@ -196,6 +196,9 @@ const a b = a
 
 apply : {A : Type} → {B : Type} → (A → B) → A → B
 apply f a = f a
+
+ev : {A : Type} → {B : Type} → A → (A → B) → B
+ev a f = f a
 ```
 This saves a huge amount of typing in the long run. Agda will complain
 if it cannot reconstruct an implicit argument given the other
@@ -209,7 +212,7 @@ compose : {A : Type} {B : Type} {C : Type}
     → (A → B)
     → (A → C)
 -- Exercise:
-compose g f = {!!}
+compose g f = λ a → g (f a)
 ```
 
 Agda considers definitions with underscores specially, and lets us
@@ -226,7 +229,7 @@ flip : {A B C : Type}
      → (A → B → C)
      → (B → A → C)
 -- Exercise:
-flip = {!!}
+flip f y x = f x y
 
 -- Should use the provided function on the argument twice.
 apply-twice : {A : Type}
@@ -234,7 +237,7 @@ apply-twice : {A : Type}
      → A
      → A
 -- Exercise:
-apply-twice = {!!}
+apply-twice f x = f (f x)
 ```
 
 * Pen and paper exercise: Check that `f ∘ id` and `id ∘ f` act the
@@ -351,13 +354,13 @@ curry3 : {A B C D : Type}
   → (((A × B) × C) → D)
   → (A → B → C → D)
 -- Exercise:
-curry3 f = {!!}
+curry3 f x y z = f ((x , y) , z)
 
 uncurry3 : {A B C D : Type}
   → (A → B → C → D)
   → (((A × B) × C) → D)
 -- Exercise:
-uncurry3 f = {!!}
+uncurry3 f t = f (fst (fst t)) (snd (fst t)) (snd t)
 ```
 
 Just as type theory generalises function types to dependent function
@@ -388,18 +391,18 @@ the pair `p`.
 `curry` and `uncurry` can ge generalised to work with dependent pairs
 and functions.
 
+mvrnote: exercise?
+
 ```
 uncurry : {A : Type} → {B : A → Type} → {C : (x : A) → B x → Type}
   → ((x : A) → (y : B x) → C x y)
   → (p : Σ[ x ∈ A ] B x) → C (fst p) (snd p)
--- Exercise
-uncurry f p = {!!}
+uncurry f p = f (fst p) (snd p)
 
 curry : {A : Type} → {B : A → Type} → {C : (x : A) → B x → Type}
   → ((p : Σ[ x ∈ A ] B x) → C (fst p) (snd p))
   → (x : A) → (y : B x) → C x y
--- Exercise
-curry f x y = {!!}
+curry f x y = f (x , y)
 ```
 
 Finally in this section, we have the "universal mapping property" of
@@ -412,7 +415,7 @@ functions `C → A` and `C → B`.
       → (C → B)
       → (C → A × B)
 -- Exercise:
-×-ump = {!!}
+×-ump f g c = (f c , g c)
 ```
 
 We will have a lot to say about universal properties in this course.
