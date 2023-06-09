@@ -5,13 +5,13 @@ module homework.2--Paths-and-Identifications.2-2--Path-Algebra-and-J where
 open import Cubical.Core.Primitives public
 open import Cubical.Foundations.Function using (idfun ; _∘_)
 
+
 open import homework.1--Type-Theory.1-1--Types-and-Functions
 open import homework.1--Type-Theory.1-2--Inductive-Types
 open import homework.1--Type-Theory.1-3--Propositions-as-Types
 open import homework.2--Paths-and-Identifications.2-1--Paths
 
 open import homework.2--Paths-and-Identifications.2-1--Paths using (refl ; cong)
-
 
 private
   variable
@@ -57,13 +57,16 @@ principle for paths:
 -- To see what the expression evaluates to,
 -- uncomment this block and move the cursor into the goal
 -- and press `C-c C-n`. (`C-n` for "normalise").
-{-
-_ : I
-_ = {! ~ i0!}
--}
+-- -
+-- _ : I
+-- _ = ! ~ i!
+-- -
 
 sym : x ≡ y → y ≡ x
 sym p i = p (~ i)
+
+sym' : x ≡ y → y ≡ x
+sym' {x = x} p = subst (λ z → z ≡ x) p refl
 ```
 
 Now, there's a fairly evident question we can ask: what happens if we
@@ -167,13 +170,13 @@ module _ {A : Type ℓ} {B : A → Type ℓ'}
   where
 
   -- Exercise:
-  ΣPathP' : Σ[ p ∈ (fst x ≡ fst y) ] PathP {!!} {!!} {!!}
+  ΣPathP' : Σ[ p ∈ (fst x ≡ fst y) ] PathP (λ i → B (p i)) (snd x) (snd y)
           → x ≡ y
   ΣPathP' eq i = fst eq i , snd eq i
 
   -- Exercise:
   PathPΣ' : x ≡ y
-          → Σ[ p ∈ (fst x ≡ fst y) ] PathP {!!} {!!} {!!}
+          → Σ[ p ∈ (fst x ≡ fst y) ] PathP ((λ i → B (p i))) (snd x) (snd y)
   PathPΣ' eq = (λ i → fst (eq i)) , (λ i → snd (eq i))
 
 ```
@@ -188,13 +191,13 @@ module _ {A : I → Type ℓ} {B : (i : I) → A i → Type ℓ'}
   where
 
   -- Exercise:
-  ΣPathP : Σ[ p ∈ PathP {!!} {!!} {!!} ] PathP {!!} {!!} {!!}
+  ΣPathP : Σ[ p ∈ PathP A (fst x) (fst y) ] PathP  (λ i → B i (p i))(snd x) (snd y)
          → PathP (λ i → Σ (A i) (B i)) x y
   ΣPathP eq i = fst eq i , snd eq i
 
   -- Exercise:
   PathPΣ : PathP (λ i → Σ (A i) (B i)) x y
-         → Σ[ p ∈ PathP {!!} {!!} {!!} ] PathP {!!} {!!} {!!}
+         → Σ[ p ∈ PathP  A (fst x) (fst y) ] PathP  (λ i → B i (p i))(snd x) (snd y)
   PathPΣ eq = (λ i → fst (eq i)) , (λ i → snd (eq i))
 ```
 
@@ -206,8 +209,8 @@ identical but the type improves:
 -- Exercise:
 depFunExt : {B : A → I → Type}
   {f : (x : A) → B x i0} {g : (x : A) → B x i1}
-  → ((x : A) → PathP {!!} {!!} {!!})
-  → PathP {!!} f g
+  → ((x : A) → PathP (λ i → B x i) (f x) (g x))
+  → PathP (λ i → (x : A) → B x i) f g
 depFunExt p i x = p x i
 ```
 
@@ -235,6 +238,20 @@ Here's the picture again:
        a00 — — — > a10         ∙ — >
              a-0                 i
 
+```
+reflSquare1 : {A : Type ℓ} {a0 a1 : A}
+              → (p : a0 ≡ a1)
+              → Square refl refl p p
+
+reflSquare1 p = λ i → refl
+
+reflSquare2 : {A : Type ℓ} {a0 a1 : A}
+              → (p : a0 ≡ a1)
+              → Square p p refl refl
+
+reflSquare2 p = refl 
+```
+
 To define interesting squares, we'll need to axiomatize a bit more
 structure from the unit interval $[0,1]$. The functions
 $max, min : [0, 1] × [0, 1] → [0, 1]$ are quite useful for constructing
@@ -250,16 +267,16 @@ definitionally.
 
 ```
 -- Uncomment this block and try normalising the following expressions.
-{-
-_ : I
-_ = {! i0 ∨ i0!}
-_ : I
-_ = {! i0 ∨ i1!}
-_ : I
-_ = {! i0 ∧ i0!}
-_ : I
-_ = {! i0 ∧ i1!}
--}
+-- -
+-- _ : I
+-- _ = ! i0 ∨ i0!
+-- _ : I
+-- _ = ! i0 ∨ i1!
+-- _ : I
+-- _ = ! i0 ∧ i0!
+-- _ : I
+-- _ = ! i0 ∧ i1!
+-- -
 ```
 
 There are a few additional equalities which hold for `max` and `min`
@@ -326,29 +343,30 @@ Below we have drawn some more squares. Write them down in Cubical Agda
 below.
 
            p⁻¹
-       x - - - > x
+       x - - - > y
        ^         ^
      p |         | refl            ^
        |         |               j |
-       x — — — > y                 ∙ — >
+       y — — — > x                 ∙ — >
           refl                       i
 
 ```
 connectionEx1 : (p : x ≡ y) → Square p refl refl (sym p)
 -- Exercise
-connectionEx1 p i j = {!!}
+connectionEx1 p i j = (p (~ i ∧ j))
 ```
             p
-        y - - - > y
+        x - - - > y
         ^         ^
     p⁻¹ |         | refl            ^
         |         |               j |
-        y — — — > x                 ∙ — >
+        y — — — > y                 ∙ — >
            refl                       i
 ```
 connectionEx2 : (p : x ≡ y) → Square (sym p) refl refl p
 -- Exercise
-connectionEx2 p i j = {!!}
+-- connectionEx2 p i j = (p (i ∨ ~ j))
+connectionEx2 p = connectionEx1 (sym p)
 ```
 
 Our definition of ℤ is a little janky and off kilter --- we treat the
@@ -370,21 +388,25 @@ isomorphic to the ones we had before.
 ```
 ℤ'→ℤ : ℤ' → ℤ
 -- Exercise
-ℤ'→ℤ z = {!!}
+ℤ'→ℤ (pos' x) = pos x
+ℤ'→ℤ (neg' x) = pos zero
+ℤ'→ℤ (neg' (suc x)) = negsuc x
+ℤ'→ℤ (poszero≡negzero i) = pos zero
 
 ℤ→ℤ' : ℤ → ℤ'
 -- Exercise
-ℤ→ℤ' z = {!!}
+ℤ→ℤ' (pos n) = pos' n
+ℤ→ℤ' (negsuc n) = pos' n
 
 ℤIsoℤ' : Iso ℤ ℤ'
 -- Exercise
 ℤIsoℤ' = iso ℤ→ℤ' ℤ'→ℤ s r
   where
     s : section ℤ→ℤ' ℤ'→ℤ
-    s z = {!!}
+    s x = {!   !}
 
     r : retract ℤ→ℤ' ℤ'→ℤ
-    r z = {!!}
+    r n = {!   !}
 ```
 
 

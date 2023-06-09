@@ -584,9 +584,32 @@ inr b1 ≡⊎ inr b2 = b1 ≡ b2
 -- ≡iff≡⊎ x y = ?
 -- Hint: can you see a way to define the forward direction using subst?
 ≡iff≡⊎ : {A B : Type} (x y : A ⊎ B) → (x ≡ y) iffP (x ≡⊎ y)
-≡iff≡⊎ (inl a) (inl a₁) = {!!}
+≡iff≡⊎ (inl a) (inl a1) = {!!} 
 ≡iff≡⊎ (inl a) (inr b) = {!!}
 ≡iff≡⊎ (inr b) (inl a) = {!!}
-≡iff≡⊎ (inr b) (inr b₁) = {!!}
+≡iff≡⊎ (inr b) (inr b1) = {!!}
+```
+
+## Computing the paths in the integers 
+```
+_≡ℤ_ : ℤ → ℤ → Type
+pos n ≡ℤ pos m = n ≡ℕ m
+pos n ≡ℤ negsuc m = ∅
+negsuc n ≡ℤ pos m = ∅
+negsuc n ≡ℤ negsuc m = n ≡ℕ m
+
+≡ℤ-refl : (a : ℤ) → a ≡ℤ a
+≡ℤ-refl (pos n) = ≡ℕ-refl n 
+≡ℤ-refl (negsuc n) = ≡ℕ-refl n
+
+≡iff≡ℤ : (a b : ℤ) → (a ≡ b) iffP (a ≡ℤ b)
+≡iff≡ℤ a b = (to a b) , (fro a b)
+  where
+    to : (x y : ℤ) → (x ≡ y) → (x ≡ℤ y)
+    to x y p = subst (λ z → x ≡ℤ z) p (≡ℤ-refl x)
+
+    fro : (x y : ℤ) → (x ≡ℤ y) → (x ≡ y)
+    fro (pos n) (pos m) p = cong pos ( ≡iff≡ℕ n m .snd p)
+    fro (negsuc n) (negsuc m) p = cong negsuc ( ≡iff≡ℕ n m .snd p)
 ```
  
