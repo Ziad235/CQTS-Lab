@@ -211,7 +211,7 @@ compose : {A : Type} {B : Type} {C : Type}
     → (B → C)
     → (A → B)
     → (A → C)
--- Exercise:
+-- Exercise1:
 compose g f = λ a → g (f a)
 ```
 
