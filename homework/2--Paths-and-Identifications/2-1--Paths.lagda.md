@@ -348,8 +348,6 @@ show that these are really isomorphisms:
 
 ```
 -- Exercise:
--- s x = ?
--- r x = ?
 Iso-Bool-⊤⊎⊤ : Iso Bool (⊤ ⊎ ⊤)
 Iso-Bool-⊤⊎⊤ = iso Bool→⊤⊎⊤ ⊤⊎⊤→Bool s r
   where
@@ -362,8 +360,6 @@ Iso-Bool-⊤⊎⊤ = iso Bool→⊤⊎⊤ ⊤⊎⊤→Bool s r
     r false = refl
 
 -- Exercise:
--- s x = ?
--- r x = ?
 Iso-∅⊎ : ∀ {ℓ} (A : Type ℓ) → Iso (∅ ⊎ A) A
 Iso-∅⊎ A = iso (∅⊎-to A) (∅⊎-fro A) s r
   where
@@ -374,8 +370,6 @@ Iso-∅⊎ A = iso (∅⊎-to A) (∅⊎-fro A) s r
     r (inr x) = refl
 
 -- Exercise:
--- s x = ?
--- r x = ?
 Iso-ℤ-ℕ⊎ℕ : Iso ℤ (ℕ ⊎ ℕ)
 Iso-ℤ-ℕ⊎ℕ = iso ℤ→ℕ⊎ℕ ℕ⊎ℕ→ℤ s r
   where
@@ -393,8 +387,6 @@ recursively.
 
 ```
 -- Exercise:
--- s x = ?
--- r x = ?
 Iso-ℕ-List⊤ : Iso ℕ (List ⊤)
 Iso-ℕ-List⊤ = iso ℕ→List⊤ length s r
   where
@@ -496,7 +488,6 @@ so we get that `subst (λ b → true ≡Bool b) p : true ≡Bool true → true �
 Give it a try in the reverse:
 ```
 -- Exercise
--- false≢true p = ?
 false≢true : ¬ false ≡ true
 false≢true p = subst (λ b → false ≡Bool b) p tt
 ```
@@ -507,8 +498,6 @@ the same thing as the equalities we define in 1-3!
 
 ```
 -- Exercise:
--- to x y = ?
--- fro x y = ?
 ≡iff≡Bool : (a b : Bool) → (a ≡ b) iffP (a ≡Bool b)
 ≡iff≡Bool a b = (to a b) , (fro a b)
   where
@@ -533,8 +522,6 @@ you're curious, give it a shot and see where you get stuck.
 We can do the same for the other equalities we covered in 1-3.
 ```
 -- Exercise
--- to x y p = ?
--- fro x y p = ?
 ≡iff≡ℕ : (a b : ℕ) → (a ≡ b) iffP (a ≡ℕ b)
 ≡iff≡ℕ a b = (to a b) , (fro a b)
   where

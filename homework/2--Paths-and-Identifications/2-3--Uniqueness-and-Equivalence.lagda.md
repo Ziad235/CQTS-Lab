@@ -88,7 +88,6 @@ Super Hint: It's exactly the connection square
 -}
 isContrSingl : (a : A) → isContr (singl a)
 -- Exercise
--- isContrSingl a = ?
 isContrSingl a = (a , refl) , contract
   where
     contract : (y : singl a) → (a , refl) ≡ y
@@ -101,7 +100,6 @@ element `tt : ⊤`, is contractible.
 ```
 isContr⊤ : isContr ⊤
 -- Exercise
--- isContr⊤ = ?
 isContr⊤ = tt , λ {tt → refl}
 ```
 
@@ -111,7 +109,6 @@ contractible type is isomorphic to `⊤`.
 ```
 isContr→Iso : {A : Type ℓ} {B : Type ℓ'} → isContr A → isContr B → Iso A B
 -- Exercise
--- isContr→Iso c c' = ?
 isContr→Iso c c' = iso (λ _ → center c')
                        (λ _ → center c)
                        (contraction c')
@@ -127,14 +124,6 @@ then it is contractible.
 ```
 Iso⊤IsContr : {A : Type ℓ} → Iso A ⊤ → isContr A
 -- Exercise
-{-
-Iso⊤IsContr iso = {!!}
-  where
-    f = Iso.fun iso
-    g = Iso.inv iso
-    s = Iso.rightInv iso
-    r = Iso.leftInv iso
--}
 Iso⊤IsContr the-iso = (g tt , λ y → trans (cong g (snd isContr⊤ (f y))) (r y))
   where
     f = Iso.fun the-iso
@@ -147,7 +136,6 @@ Iso⊤IsContr the-iso = (g tt , λ y → trans (cong g (snd isContr⊤ (f y))) (
 We can show that there is in fact a unique map from `∅` to any type.
 ```
 ∅-rec-unique : {A : Type ℓ} → isContr (∅ → A)
--- ∅-rec-unique = ?
 
 ∅-rec-unique = ∅-rec , λ f → funExt (pointwise f)
   where pointwise : (f : ∅ → A) (x : ∅) → ∅-rec x ≡ f x
@@ -164,7 +152,6 @@ isContrRetract
   → (v : isContr B) → isContr A
 -- Exercise
 -- Hint: You'll need transitivity of paths.
--- isContrRetract f g h (b , p) = ?
 fst (isContrRetract f g h (b , p)) = g b
 snd (isContrRetract f g h (b , p)) x = trans (cong g (p (f x))) (h x)
 ```
@@ -177,8 +164,6 @@ isContrFun : ∀ {A : Type ℓ} {B : A → Type ℓ}
            → ((a : A) → isContr (B a))
            → isContr ((a : A) → B a)
 -- Exercise
--- fst (isContrFun c) = ?
--- snd (isContrFun c) f i a = ?
 fst (isContrFun c) = center ∘ c
 snd (isContrFun c) f i a = contraction (c a) (f a) i
 ```
@@ -247,7 +232,6 @@ singl' {A = A} a = Σ[ x ∈ A ] (x ≡ a)
 
 isContrSingl' : {A : Type} (a : A) → isContr (singl' a)
 -- Exercise
--- contract (x, p) = ?
 isContrSingl' a = (a , refl) , contract
   where
     contract : (y : singl' a) → (a , refl) ≡ y
@@ -267,8 +251,6 @@ inv e b = fst (center (snd e b))
 
 equivToIso : {A B : Type} → A ≃ B → Iso A B
 -- Exercise
--- s e = ?
--- r e = ?
 equivToIso e = iso (fst e) (inv e) (s e) (r e)
   where
     s : (e : A ≃ B) → section (fst e) (inv e)
@@ -350,7 +332,6 @@ The graph of a function is a functional relation --- hence the name.
 ```
 isFunctionalGraph : {A B : Type ℓ} (f : A → B) → isFunctional (graph f)
 -- Exercise:
--- isFuncationalGraph f a = ?
 isFunctionalGraph f a = isContrSingl (f a)
 ```
 
@@ -359,7 +340,6 @@ On the other hand, any functional relation gives rise to a function.
 isFunctional→Fun : {A B : Type ℓ} (R : Rel A B) (c : isFunctional R)
                  → A → B
 -- Exercise:
--- isFunctional→Fun R c a = ?
 isFunctional→Fun R c a = fst (center (c a))
 ```
 
@@ -368,8 +348,7 @@ function `f` is just `f`:
 ```
 section-isFunctionalGraph→Fun : {A B : Type} (f : A → B)
       → isFunctional→Fun (graph f) (isFunctionalGraph f) ≡ f
--- Exercise:v
--- section-isFunctionalGraph→Fun f = ?
+-- Exercise:
 section-isFunctionalGraph→Fun f = refl
 ```
 
@@ -400,7 +379,6 @@ correspondence.
 graphEquivIsOneToOne : {A B : Type} (e : A ≃ B)
                      → isOneToOne (graph (fst e))
 -- Exercise
--- graphEquivIsOneToOne e = ?
 graphEquivIsOneToOne (e , p) = (isFunctionalGraph e) , p
 ```
 
