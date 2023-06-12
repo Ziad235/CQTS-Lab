@@ -145,7 +145,7 @@ suc n ≤ suc m = n ≤ m
 take : (n : ℕ) (L : List A) → BooleanPartial (n ≤ length L) (List A)
 -- Exercise
 take zero L = just []
-take (suc n) (x :: L) = (x :: _) (take n L)
+take (suc n) (x :: L) = {!!}
 ```
 
 ## Partial elements
