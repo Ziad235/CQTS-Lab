@@ -1,6 +1,5 @@
 # Homework 2-1: Paths and the Interval
 ```
-{-# OPTIONS --allow-unsolved-metas #-}
 module homework.2--Paths-and-Identifications.2-1--Paths where
 
 open import Cubical.Core.Primitives public
@@ -11,7 +10,7 @@ open import homework.1--Type-Theory.1-3--Propositions-as-Types
 ```
 
 Aside: This block lets us refer to some arbitrary types `A`, `B`, ... and
-terms `x : A`, `y : A`, ... without cluttering every definition with
+terms `x : A`, `y : A`, ... without clutting every definition with
 `{A : Type} {B : Type}`, and so on.
 ```
 private
@@ -161,17 +160,20 @@ Even with such a basic principle, this is already enough to start
 proving some useful equalities.
 ```
 -- Exercise
+-- ∘-assoc h g f i x = ?
 ∘-assoc : (h : C → D)
           (g : B → C)
           (f : A → B)
         → (h ∘ g) ∘ f ≡ h ∘ (g ∘ f)
-∘-assoc h g f i x = h ( g (f x))
+∘-assoc h g f i x = h (g (f x))
 
 -- Exercise
+-- ∘-idˡ f i x = ?
 ∘-idˡ : (f : A → B) → f ∘ (λ a → a) ≡ f
 ∘-idˡ f i x = f x
 
 -- Exercise
+-- ∘-idʳ f i x = ?
 ∘-idʳ : (f : A → B) → (λ b → b) ∘ f ≡ f
 ∘-idʳ f i x = f x
 ```
@@ -179,45 +181,37 @@ proving some useful equalities.
 We can even show that `Bool` has the structure of a *Boolean algebra*.
 ```
 notnot : ∀ x → not (not x) ≡ x
-notnot true i = true
-notnot false i = false
+notnot true  = refl
+notnot false = refl
 
 -- or properties
 or-zeroˡ : ∀ x → true or x ≡ true
-or-zeroˡ true = refl
-or-zeroˡ false = refl
+or-zeroˡ _ = refl
 
 or-zeroʳ : ∀ x → x or true ≡ true
-or-zeroʳ true = refl
 or-zeroʳ false = refl
+or-zeroʳ true  = refl
 
 or-identityˡ : ∀ x → false or x ≡ x
-or-identityˡ true = refl
-or-identityˡ false = refl
+or-identityˡ _ = refl
 
 or-identityʳ : ∀ x → x or false ≡ x
-or-identityʳ true = refl
 or-identityʳ false = refl
+or-identityʳ true  = refl
 
 or-comm      : ∀ x y → x or y ≡ y or x
-or-comm true true = refl
-or-comm true false = refl
-or-comm false true = refl
 or-comm false false = refl
+or-comm false true  = refl
+or-comm true  false = refl
+or-comm true  true  = refl
 
 or-assoc     : ∀ x y z → x or (y or z) ≡ (x or y) or z
-or-assoc true true true = refl
-or-assoc true true false = refl
-or-assoc true false true = refl
-or-assoc true false false = refl
-or-assoc false true true = refl
-or-assoc false true false = refl
-or-assoc false false true = refl
-or-assoc false false false = refl
+or-assoc false y z = refl
+or-assoc true  y z = refl
 
 or-idem      : ∀ x → x or x ≡ x
-or-idem true = refl
 or-idem false = refl
+or-idem true  = refl
 ```
 
 OK, that's enough of that --- it's straightforward to keep going.
@@ -250,7 +244,7 @@ cong-∘ : (f : A → B) (g : B → C)
   → (p : x ≡ y)
   → cong (g ∘ f) p ≡ cong g (cong f p)
 -- Exercise:
-cong-∘ f g p i j = g ( f (p j))
+cong-∘ f g p = refl
 ```
 
 ## Paths in Pairs and Function Types
@@ -269,15 +263,15 @@ endpoints.
 ```
 ≡-× : {x y : A × B} → (fst x ≡ fst y) × (snd x ≡ snd y) → x ≡ y
 -- Exercise:
-≡-× (p , q) i = (p i , q i)
+≡-× (p , q) i = (p i) , (q i)
 
 ≡-fst : {x y : A × B} → x ≡ y → (fst x ≡ fst y)
 -- Exercise:
-≡-fst p = cong (λ z → fst z) p
+≡-fst p i = fst (p i)
 
 ≡-snd : {x y : A × B} → x ≡ y → (snd x ≡ snd y)
 -- Exercise:
-≡-snd p = cong (λ z → snd z) p
+≡-snd p i = snd (p i)
 ```
 
 Similarly, what is a path in a function type? It is a function landing
@@ -288,14 +282,13 @@ funExt : {f g : A → B}
   → ((x : A) → f x ≡ g x)
   → f ≡ g
 -- Exercise:
-funExt h i x = h x i
+funExt f i x = f x i
 
 funExt⁻ : {f g : A → B}
   → f ≡ g
   → ((x : A) → f x ≡ g x)
 -- Exercise:
--- funExt⁻ p x = cong (λ h → h x) p
-funExt⁻ h x i = h i x
+funExt⁻ p x i = p i x
 ```
 This is the principle of "function extensionality": to say that `f`
 equals `g` means that for all `x`, `f x` equals `g x`.
@@ -305,10 +298,11 @@ The `≡` constructor has low precedence, so `f x ≡ f y` means `(f x) ≡
 
 ```
 -- Exercise: funExt for binary functions
+-- funExt2 p i x y = ?
 funExt2 : {f g : A → B → C}
        (p : (x : A) (y : B) → f x y ≡ g x y)
        → f ≡ g
-funExt2 p = funExt (λ x → funExt (p x))
+funExt2 p i x y = p x y i
 ```
 
 ## Isomorphisms
@@ -339,10 +333,6 @@ module _ {ℓ ℓ'} {A : Type ℓ} {B : Type ℓ'} where
   retract : (f : A → B) → (g : B → A) → Type ℓ
   retract f g = ∀ a → g (f a) ≡ a
 
--- This defines a record type
--- Record types are like pair types, but more than two components.
--- All we need to know about this is that to build an Iso, we use
--- iso f g s r
 record Iso {ℓ ℓ'} (A : Type ℓ) (B : Type ℓ') : Type (ℓ-max ℓ ℓ') where
   no-eta-equality
   constructor iso
@@ -381,7 +371,7 @@ Iso-∅⊎ A = iso (∅⊎-to A) (∅⊎-fro A) s r
     s x = refl
 
     r : retract (∅⊎-to A) (∅⊎-fro A)
-    r (inr b) = refl
+    r (inr x) = refl
 
 -- Exercise:
 -- s x = ?
@@ -390,8 +380,8 @@ Iso-ℤ-ℕ⊎ℕ : Iso ℤ (ℕ ⊎ ℕ)
 Iso-ℤ-ℕ⊎ℕ = iso ℤ→ℕ⊎ℕ ℕ⊎ℕ→ℤ s r
   where
     s : section ℤ→ℕ⊎ℕ ℕ⊎ℕ→ℤ
-    s (inl a) = refl
-    s (inr b) = refl
+    s (inl x) = refl
+    s (inr x) = refl
 
     r : retract ℤ→ℕ⊎ℕ ℕ⊎ℕ→ℤ
     r (pos n) = refl
@@ -410,7 +400,7 @@ Iso-ℕ-List⊤ = iso ℕ→List⊤ length s r
   where
     s : section ℕ→List⊤ length
     s [] = refl
-    s (tt :: l) = cong (tt ::_) (s l)
+    s (tt :: L) = cong (tt ::_) (s L)
 
     r : retract ℕ→List⊤ length
     r zero = refl
@@ -424,30 +414,20 @@ isomorphic to itself in a non-trivial way.
 -- Exercise
 --  s x = ?
 --  r x = ?
-not-Iso : Iso Bool Bool
-not-Iso = iso not not s r
-  where
-    s : section not not
-    s true = refl
-    s false = refl
-
-    r : retract not not
-    r true = refl
-    r false = refl
-
--- Exercise
---  s x = ?
---  r x = ?
 sucℤ-Iso : Iso ℤ ℤ
 sucℤ-Iso = iso sucℤ predℤ s r
   where
     s : section sucℤ predℤ
-    s (pos n) = {!!}
-    s (negsuc n) = {!!}
+    s (pos zero) = refl
+    s (pos (suc n)) = refl
+    s (negsuc zero) = refl
+    s (negsuc (suc n)) = refl
 
     r : retract sucℤ predℤ
-    r (pos n) = refl
-    r (negsuc n) = {!!}
+    r (pos zero) = refl
+    r (pos (suc n)) = refl
+    r (negsuc zero) = refl
+    r (negsuc (suc n)) = refl
 ```
 
 ## Substitution and Paths as Equalities
@@ -515,9 +495,10 @@ so we get that `subst (λ b → true ≡Bool b) p : true ≡Bool true → true �
 
 Give it a try in the reverse:
 ```
-false≢true : ¬ false ≡ true
 -- Exercise
-false≢true p = ∅-rec (subst (λ b → false ≡Bool b) p tt)
+-- false≢true p = ?
+false≢true : ¬ false ≡ true
+false≢true p = subst (λ b → false ≡Bool b) p tt
 ```
 
 
@@ -525,20 +506,22 @@ Now we have all the tools necessary to show that paths in `Bool` are
 the same thing as the equalities we define in 1-3!
 
 ```
-≡iff≡Bool : (a b : Bool) → (a ≡ b) iffP (a ≡Bool b)
 -- Exercise:
+-- to x y = ?
+-- fro x y = ?
+≡iff≡Bool : (a b : Bool) → (a ≡ b) iffP (a ≡Bool b)
 ≡iff≡Bool a b = (to a b) , (fro a b)
   where
     to : (x y : Bool) → (x ≡ y) → (x ≡Bool y)
     to true true = λ _ → tt
-    to true false = {!!}
-    to false true =  {!!}
+    to true false = true≢false
+    to false true = false≢true
     to false false = λ _ → tt
 
     fro : (x y : Bool) → (x ≡Bool y) → (x ≡ y)
     fro true true = λ _ → refl
-    fro true false = λ ()
-    fro false true = λ ()
+    fro true false = ∅-rec
+    fro false true = ∅-rec
     fro false false = λ _ → refl
 ```
 
@@ -556,16 +539,21 @@ We can do the same for the other equalities we covered in 1-3.
 ≡iff≡ℕ a b = (to a b) , (fro a b)
   where
     to : (x y : ℕ) → (x ≡ y) → (x ≡ℕ y)
-    to zero zero = λ _ → tt
-    to zero (suc y) = {!!}
-    to (suc x) zero = {!!}
-    to (suc x) (suc y) = {!!}
+    to zero zero p = tt
+    to zero (suc y) p = subst (λ n → zero ≡ℕ n) p tt
+    to (suc x) zero p = subst (λ n → suc x ≡ℕ n) p (≡ℕ-refl x)
+    to (suc x) (suc y) p = to x y (cong predℕ p)
+
+    to' : (x y : ℕ) → (x ≡ y) → (x ≡ℕ y)
+    to' x y p = subst (λ z → x ≡ℕ z) p (r x)
+      where
+        r : (x : ℕ) → x ≡ℕ x
+        r zero = tt
+        r (suc x) = r x
 
     fro : (x y : ℕ) → (x ≡ℕ y) → (x ≡ y)
-    fro zero zero = λ _ → refl
-    fro zero (suc y) = λ ()
-    fro (suc x) zero = λ ()
-    fro (suc x) (suc y) = λ p → cong suc (fro x y p)
+    fro zero zero p = refl
+    fro (suc x) (suc y) p = cong suc (fro x y p)
 ```
 
 Now that we have a notion of sameness - paths - valid in all types, we
@@ -584,32 +572,32 @@ inr b1 ≡⊎ inr b2 = b1 ≡ b2
 -- ≡iff≡⊎ x y = ?
 -- Hint: can you see a way to define the forward direction using subst?
 ≡iff≡⊎ : {A B : Type} (x y : A ⊎ B) → (x ≡ y) iffP (x ≡⊎ y)
-≡iff≡⊎ (inl a) (inl a1) = {!!} 
-≡iff≡⊎ (inl a) (inr b) = {!!}
-≡iff≡⊎ (inr b) (inl a) = {!!}
-≡iff≡⊎ (inr b) (inr b1) = {!!}
-```
-
-## Computing the paths in the integers 
-```
-_≡ℤ_ : ℤ → ℤ → Type
-pos n ≡ℤ pos m = n ≡ℕ m
-pos n ≡ℤ negsuc m = ∅
-negsuc n ≡ℤ pos m = ∅
-negsuc n ≡ℤ negsuc m = n ≡ℕ m
-
-≡ℤ-refl : (a : ℤ) → a ≡ℤ a
-≡ℤ-refl (pos n) = ≡ℕ-refl n 
-≡ℤ-refl (negsuc n) = ≡ℕ-refl n
-
-≡iff≡ℤ : (a b : ℤ) → (a ≡ b) iffP (a ≡ℤ b)
-≡iff≡ℤ a b = (to a b) , (fro a b)
+≡iff≡⊎ x y = (to x y) , (fro x y)
   where
-    to : (x y : ℤ) → (x ≡ y) → (x ≡ℤ y)
-    to x y p = subst (λ z → x ≡ℤ z) p (≡ℤ-refl x)
+    unl : (a : A) (z : A ⊎ B) → A
+    unl a (inl a2) = a2
+    unl a (inr b) = a
 
-    fro : (x y : ℤ) → (x ≡ℤ y) → (x ≡ y)
-    fro (pos n) (pos m) p = cong pos ( ≡iff≡ℕ n m .snd p)
-    fro (negsuc n) (negsuc m) p = cong negsuc ( ≡iff≡ℕ n m .snd p)
+    unr : (b : B) (z : A ⊎ B) → B
+    unr b (inl a) = b
+    unr b (inr b2) = b2
+
+    to : (z w : A ⊎ B) → z ≡ w → z ≡⊎ w
+    to (inl a1) (inl a2) p = cong (unl a1) p
+    to (inl a) (inr b) p = subst (λ v → (inl a) ≡⊎ v) p refl
+    to (inr b) (inl a) p = subst (λ v → (inr b) ≡⊎ v) p refl
+    to (inr b1) (inr b2) p = cong (unr b1) p
+
+    to' : (z w : A ⊎ B) → z ≡ w → z ≡⊎ w
+    to' z w p = subst (λ k → z ≡⊎ k) p (r z)
+      where
+        r : (z : A ⊎ B) → z ≡⊎ z
+        r (inl a) = refl
+        r (inr b) = refl
+
+    fro : (z w : A ⊎ B) → z ≡⊎ w → z ≡ w
+    fro (inl a1) (inl a2) = cong inl
+    fro (inl a) (inr b) = ∅-rec
+    fro (inr b) (inl a) = ∅-rec
+    fro (inr b1) (inr b2) = cong inr
 ```
- 

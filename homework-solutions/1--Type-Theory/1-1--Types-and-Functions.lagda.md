@@ -212,7 +212,6 @@ compose : {A : Type} {B : Type} {C : Type}
     → (A → B)
     → (A → C)
 -- Exercise:
--- compose g f = {!!}
 compose g f = λ a → g (f a)
 ```
 
@@ -230,7 +229,6 @@ flip : {A B C : Type}
      → (A → B → C)
      → (B → A → C)
 -- Exercise:
--- flip = {!!}
 flip f y x = f x y
 
 -- Should use the provided function on the argument twice.
@@ -239,7 +237,6 @@ apply-twice : {A : Type}
      → A
      → A
 -- Exercise:
--- apply-twice = {!!}
 apply-twice f x = f (f x)
 ```
 
@@ -357,14 +354,12 @@ curry3 : {A B C D : Type}
   → (((A × B) × C) → D)
   → (A → B → C → D)
 -- Exercise:
--- curry3 f = {!!}
 curry3 f x y z = f ((x , y) , z)
 
 uncurry3 : {A B C D : Type}
   → (A → B → C → D)
   → (((A × B) × C) → D)
 -- Exercise:
--- uncurry3 f = {!!}
 uncurry3 f t = f (fst (fst t)) (snd (fst t)) (snd t)
 ```
 
@@ -420,7 +415,6 @@ functions `C → A` and `C → B`.
       → (C → B)
       → (C → A × B)
 -- Exercise:
--- ×-ump = {!!}
 ×-ump f g c = (f c , g c)
 ```
 
