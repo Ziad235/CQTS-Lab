@@ -368,7 +368,7 @@ function `f` is just `f`:
 ```
 section-isFunctionalGraph→Fun : {A B : Type} (f : A → B)
       → isFunctional→Fun (graph f) (isFunctionalGraph f) ≡ f
--- Exercise:v
+-- Exercise:
 -- section-isFunctionalGraph→Fun f = ?
 section-isFunctionalGraph→Fun f = refl
 ```
