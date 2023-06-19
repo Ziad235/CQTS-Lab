@@ -119,6 +119,8 @@ isProp-≡Bool false true = isProp∅
 isProp-≡Bool false false = isProp⊤
 
 isProp-≡ℕ : (n m : ℕ) → isProp (n ≡ℕ m)
+-- Exercise
+--isProp-≡ℕ n m = ?
 isProp-≡ℕ zero zero = isProp⊤
 isProp-≡ℕ zero (suc m) = isProp∅
 isProp-≡ℕ (suc n) zero = isProp∅
@@ -140,7 +142,8 @@ has an element, then it is contractible.
 ```
 Prop-with-point-isContr : isProp A → A → isContr A
 -- Exercise:
-Prop-with-point-isContr p a = {!!}
+-- Prop-with-point-isContr p a = {!!}
+Prop-with-point-isContr p a = a , p a
 ```
 
 We can go the other way too. If, whenever `A` has an element, it has a
@@ -149,7 +152,11 @@ unique element, then it has at most one element.
 ```
 isContr-prop-with-point : (A → isContr A) → isProp A
 -- Exercise:
-isContr-prop-with-point c x y = {!!}
+-- isContr-prop-with-point c x y = ?
+isContr-prop-with-point c x y =
+  x         ≡⟨ sym (snd (c x) x) ⟩
+  fst (c x) ≡⟨ (snd (c x) y) ⟩
+  y         ∎
 ```
 
 More interestingly, we can show that being contractible is a
@@ -228,7 +235,7 @@ isProp→SquareP {A = A} isPropB {a = a} r s t u i j =
            ; k (j = i1) → isPropB i i1 (base i i1) (s i) k
         }) (base i j) where
     base : (i j : I) → A i j
-    base i j = {!!}
+    base i j = transport (λ k → A (i ∧ k) (j ∧ k)) a
 
 isPropIsProp : isProp (isProp A)
 isPropIsProp isProp1 isProp2 i a b = isProp→SquareP (λ _ _ → isProp1) refl refl (isProp1 a b) (isProp2 a b) i
@@ -248,7 +255,8 @@ isPropFun : {A : Type ℓ} {B : A → Type ℓ'}
             (p : ∀ a → isProp (B a))
           → isProp (∀ a → B a)
 -- Exercise
-isPropFun p f g = {!!}
+-- isPropFun p f g = ?
+isPropFun p f g i a = p a (f a) (g a) i
 ```
 
 As a special case of "for all", we get "implies". If `A` and `B` are
@@ -278,10 +286,14 @@ propExt : isProp A → isProp B
         → (A → B) → (B → A)
         → Iso A B
 -- Exercise
-Iso.fun (propExt isPropA isPropB f g) = {!!}
-Iso.inv (propExt isPropA isPropB f g) = {!!}
-Iso.rightInv (propExt isPropA isPropB f g) b = {!!}
-Iso.leftInv (propExt isPropA isPropB f g) a = {!!}
+-- Iso.fun (propExt isPropA isPropB f g) = f
+-- Iso.inv (propExt isPropA isPropB f g) = g
+-- Iso.rightInv (propExt isPropA isPropB f g) b = isPropB (f (g b)) b
+-- Iso.leftInv (propExt isPropA isPropB f g) a = isPropA (g (f a)) a
+Iso.fun (propExt isPropA isPropB f g) = f
+Iso.inv (propExt isPropA isPropB f g) = g
+Iso.rightInv (propExt isPropA isPropB f g) b = isPropB (f (g b)) b
+Iso.leftInv (propExt isPropA isPropB f g) a = isPropA (g (f a)) a
 ```
 
 We could in fact show that `A iffP B` is isomorphic to `Iso A B`.
@@ -303,8 +315,7 @@ isProp¬ = isProp→ isProp∅
 The "and" of two proposition `A` and `B` is the type of pairs `A × B`.
 ```
 isProp× : isProp A → isProp B → isProp (A × B)
--- Exercise
-isProp× pA pB (a1 , b1) (a2 , b2) i = {!!}
+isProp× pA pB (a1 , b1) (a2 , b2) i = (pA a1 a2 i) , (pB b1 b2 i)
 ```
 
 Similarly to `→`, if `A` and `B` are true (contracible), then `A × B` should
@@ -325,7 +336,13 @@ isPropRetract :
   → (h : retract f g)
   → isProp B → isProp A
 -- Exercise
-isPropRetract f g h isPropB x y i = {!!}
+-- isPropRetract f g h isPropB x y i =
+isPropRetract f g h isPropB x y i =
+  hcomp
+    (λ j → λ
+      { (i = i0) → h x j
+      ; (i = i1) → h y j})
+    (g (isPropB (f x) (f y) i))
 ```
 
 And similarly for contractible types:
@@ -335,8 +352,13 @@ isContrRetract :
   → (h : retract f g)
   → isContr B → isContr A
 -- Exercise
-fst (isContrRetract f g h (center , contr)) = {!!}
-snd (isContrRetract f g h (center , contr)) x = {!!}
+-- fst (isContrRetract f g h (center , contr)) = ?
+-- snd (isContrRetract f g h (center , contr)) x = ?
+fst (isContrRetract f g h (center , contr)) = g center
+snd (isContrRetract f g h (center , contr)) x =
+  g center ≡⟨ cong g (contr (f x)) ⟩
+  g (f x)  ≡⟨ h x ⟩
+  x ∎
 ```
 
 ## Propositional Truncation
@@ -354,8 +376,7 @@ constructors.
 ```
 infix 3 ∃_
 data ∃_ (A : Type ℓ) : Type ℓ where
-  ∣_∣ : A → ∃ A   -- Given an element of `A`, we can prove that
-                  -- there is an element of `A`.
+  ∣_∣ : A → ∃ A
   squash : (x y : ∃ A) → x ≡ y
 ```
 
@@ -400,20 +421,20 @@ functions between types to functions between their truncations. If we have a fun
 ```
 ∃-map : (A → B) → (∃ A → ∃ B)
 -- Exercise
-∃-map f = {!!}
+-- ∃-map f = ?
+∃-map f = ∃-rec isProp-∃ (∣_∣ ∘ f)
 ```
 
 When `P` is already a proposition, truncating it should do nothing:
 
 ```
 isProp→equiv∃ : isProp P → Iso P (∃ P)
--- Exercise
-isProp→equiv∃ isPropP = ?
+isProp→equiv∃ isPropP = propExt isPropP isProp-∃ (λ x → ∣ x ∣) (∃-rec isPropP (idfun _))
 ```
 
 If `P : A → Type` is a family of propositions on `A` --- that is, a
 proposition concerning elements of `A` --- then we often like to write
-something like "∃ a : A , P a" to say that there is an `a : A` such
+something like "$∃ a : A , P a$" to say that there is an `a : A` such
 that `P a` is true. Type theoretically, this is saying that there is
 some pair `(a , p)` where `a : A` and `p : P a`. For this reason, we
 can define a special syntax that resembles the usual mathematical
@@ -421,9 +442,8 @@ notation for existential quantification.
 
 ```
 ∃-syntax : (A : Type ℓ) (B : A → Type ℓ') → Type (ℓ-max ℓ ℓ')
-∃-syntax A B = ∃ (Σ A B)   -- To prove that there is an a : A
-                           -- such that P a means to prove that there is
-                           -- a pair (a , p) with a : A and p : P a.
+∃-syntax A B = ∃ (Σ A B)
+
 syntax ∃-syntax A (λ x → B) = ∃[ x ∈ A ] B
 ```
 
@@ -454,7 +474,6 @@ A orP B = ∃ (A ⊎ B)
 ```
 
 Challenge:
-```
 ∃-Idem-×-L-Iso : Iso (∃ (∃ A) × B) (∃ A × B)
 ∃-Idem-×-L-Iso = {!!}
 
@@ -463,7 +482,6 @@ Challenge:
 
 ∃-×-Iso : Iso ((∃ A) × (∃ B)) (∃ A × B)
 ∃-×-Iso = {!!}
-```
 
 ## Decidable Types
 
@@ -509,16 +527,42 @@ Dec→Stable (yes x) = λ _ → x
 Dec→Stable (no x) = λ f → ∅-rec (f x)
 
 Dec-Idem : Dec (Dec A) → Dec A
-Dec-Idem = {!!}
+Dec-Idem (yes (yes p)) = yes p
+Dec-Idem (yes (no ¬p)) = no ¬p
+Dec-Idem (no ¬p) = no λ x → ¬p (yes x)
 
-∃-Dec : Iso (Dec (∃ A)) (∃ (Dec A))
-∃-Dec = {!!}
+isProp-Dec : isProp A → isProp (Dec A)
+isProp-Dec isPropA (yes p₁) (yes p₂) = cong yes (isPropA p₁ p₂)
+isProp-Dec isPropA (yes p) (no ¬p) = ∅-rec (¬p p)
+isProp-Dec isPropA (no ¬p) (yes p) = ∅-rec (¬p p)
+isProp-Dec isPropA (no ¬p₁) (no ¬p₂) = cong no (isProp¬ ¬p₁ ¬p₂)
 
-¬¬-Dec : Iso (¬ ¬ ∃ A) (¬ ¬ A)
-¬¬-Dec = {!!}
+∃-Dec-Iso : Iso (Dec (∃ A)) (∃ (Dec A))
+∃-Dec-Iso = propExt (isProp-Dec isProp-∃) isProp-∃ to fro
+  where
+    to : Dec (∃ A) → ∃ (Dec A)
+    to (yes p) = ∃-map yes p
+    to (no ¬p) = ∣ no (λ x → ¬p ∣ x ∣) ∣
+
+    fro-lemma : Dec A → Dec (∃ A)
+    fro-lemma (yes p) = yes ∣ p ∣
+    fro-lemma (no ¬p) = no (∃-rec isProp∅ ¬p)
+
+    fro : ∃ (Dec A) → Dec (∃ A)
+    fro = ∃-rec (isProp-Dec isProp-∃) fro-lemma
+
+¬¬-∃-Iso : Iso (¬ ¬ ∃ A) (¬ ¬ A)
+¬¬-∃-Iso = propExt isProp¬ isProp¬ to fro
+  where
+    to : ¬ ¬ ∃ A → ¬ ¬ A
+    to ¬¬∃a ¬a = ¬¬∃a (∃-rec isProp∅ ¬a)
+
+    fro : ¬ ¬ A → ¬ ¬ ∃ A
+    fro ¬¬a ¬∃a = ¬¬a (λ x → ¬∃a ∣ x ∣)
 
 Dec→SplitSupport : Dec A → (∃ A → A)
-Dec→SplitSupport = {!!}
+Dec→SplitSupport (yes p) e = p
+Dec→SplitSupport (no ¬p) e = ∅-rec (∃-rec isProp∅ ¬p e)
 ```
 
 ## Subtypes
@@ -585,7 +629,7 @@ Now the main lemma.
     fro-to e i j = e j
 ```
 
-It will also be useful have an inverse to `isPred→∀isProp`, so that we can interconvert freely between these two notions. To go the
+It will also be useful have an inverse to `isPred→∀isProp`. To go the
 other way, we need a few useful library functions which convert
 paths-over-paths (in `PathP`) to paths starting at a transport. This
 will give us a good opportunity to revisit `transp`.
