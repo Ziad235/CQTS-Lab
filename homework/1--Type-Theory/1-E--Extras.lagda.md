@@ -90,8 +90,7 @@ map-test = map suc (1 :: 2 :: 3 :: 4 :: [])
 -- This one is more difficult...
 -- Write a function which sorts a list.
 -- sort _≤_ [5,3,1,2,4] should be [1,2,3,4,5]
-{-# NON_TERMINATING #-} -- This scary thing will just stop Agda whining
-                        -- about the expected solution.
+{-# NON_TERMINATING #-} -- This scary thing will just stop Agda whining about the expected solution.
                         -- If you're curious about why agda is whining,
                         -- Ask me sometime
                         -- (or look into well founded recursion).
