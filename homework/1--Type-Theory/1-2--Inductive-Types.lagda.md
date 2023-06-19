@@ -77,7 +77,7 @@ true or y = true
 false or y = y
 ```
 
-Here is the definition of logical implication. There is a strange
+Here's the definition of logical implication. There is a strange
 feature of this definition which has a fancy Latin name: "ex falso
 quodlibet" --- false implies anything. Over the course of this and the
 next lecture, we'll see why this is a useful principle to take, even

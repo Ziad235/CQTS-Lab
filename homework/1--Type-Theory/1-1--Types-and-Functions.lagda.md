@@ -87,7 +87,7 @@ Functions are defined by placing a fresh variable name to the left of
 the `=` sign, which can then be used on the right. So here, idℕ
 accepts `x` as input, and immediately produces `x` as output.
 
-Here is another way to define the identity function:
+Here's another way to define the identity function:
 ```
 idℕ' : ℕ → ℕ
 idℕ' = λ (x : ℕ) → x

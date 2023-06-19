@@ -100,7 +100,7 @@ _andP_ : Type → Type → Type
 P andP Q = P × Q
 ```
 
-Now consdier implication. Implication means that, assuming you have a
+Now consider implication. Implication means that, assuming you have a
 proof of `P`, you can get a proof of `Q`. This is exactly what
 functions do, so we can also turn this into a definition:
 
