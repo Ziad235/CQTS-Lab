@@ -474,7 +474,7 @@ Baut : (X : Type ℓ) (x : X) → Type ℓ
 Baut X x = Σ[ y ∈ X ] (x ≡ y)
 
 TwoElementSet : Type _
-TwoElementSet = Baut _ Bool --_ was Type
+TwoElementSet = Baut _ Bool 
 
 TotallyOrderedElementSet : Type _
 TotallyOrderedElementSet = Σ[ F ∈ Type ] (Bool ≡ F)
