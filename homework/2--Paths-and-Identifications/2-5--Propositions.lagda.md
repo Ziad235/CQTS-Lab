@@ -282,10 +282,6 @@ propExt : isProp A → isProp B
         → (A → B) → (B → A)
         → Iso A B
 -- Exercise
--- Iso.fun (propExt isPropA isPropB f g) = f
--- Iso.inv (propExt isPropA isPropB f g) = g
--- Iso.rightInv (propExt isPropA isPropB f g) b = isPropB (f (g b)) b
--- Iso.leftInv (propExt isPropA isPropB f g) a = isPropA (g (f a)) a
 Iso.fun (propExt isPropA isPropB f g) = f
 Iso.inv (propExt isPropA isPropB f g) = g
 Iso.rightInv (propExt isPropA isPropB f g) b = isPropB (f (g b)) b
@@ -471,6 +467,17 @@ there exists an element in `A ⊎ B`.
 ```
 _orP_ : Type ℓ → Type ℓ' → Type _
 A orP B = ∃ (A ⊎ B)
+```
+
+```
+Baut : (X : Type ℓ) (x : X) → Type ℓ
+Baut X x = Σ[ y ∈ X ] (x ≡ y)
+
+TwoElementSet : Type _
+TwoElementSet = Baut _ Bool --_ was Type
+
+TotallyOrderedElementSet : Type _
+TotallyOrderedElementSet = Σ[ F ∈ Type ] (Bool ≡ F)
 ```
 
 Challenge:

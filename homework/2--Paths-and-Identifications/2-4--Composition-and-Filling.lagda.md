@@ -762,7 +762,7 @@ lUnit : (p : x ≡ y) → p ≡ refl ∙ p
 lUnit {x = x} p i j = hcomp (lUnit-faces p i j) (lUnit-base p i j)
 ```
 
-Here's an open ended problem that requires using two `hcomps`. Try and figure out what boxes you should try and close off to solve it.
+Here is an open ended problem that requires using two `hcomps`. Try and figure out what boxes you should try and close off to solve it.
 
 ```
 isContrisContr≡ : {A : Type ℓ} (c : isContr A) (a b : A) → isContr (a ≡ b)
