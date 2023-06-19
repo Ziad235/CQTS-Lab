@@ -1,5 +1,6 @@
 # Homework 2-5: Propositions
 ```
+-- {-# OPTIONS --allow-unsolved-metas #-}
 module homework.2--Paths-and-Identifications.2-5--Propositions where
 
 open import Cubical.Data.Sigma.Base using (Σ ; _×_)
@@ -470,11 +471,12 @@ A orP B = ∃ (A ⊎ B)
 ```
 
 ```
-Baut : (X : Type ℓ) (x : X) → Type ℓ
-Baut X x = Σ[ y ∈ X ] (x ≡ y)
+BAut : (X : Type ℓ) (x : X) → Type ℓ
+BAut X x = Σ[ y ∈ X ] (x ≡ y)
 
 TwoElementSet : Type _
-TwoElementSet = Baut _ Bool --_ was Type
+TwoElementSet = BAut _ Bool --_ was Type
+-- singl x = Σ[ y ∈ X ] (x ≡ y)
 
 TotallyOrderedElementSet : Type _
 TotallyOrderedElementSet = Σ[ F ∈ Type ] (Bool ≡ F)
@@ -482,14 +484,14 @@ TotallyOrderedElementSet = Σ[ F ∈ Type ] (Bool ≡ F)
 
 Challenge:
 ```
-∃-Idem-×-L-Iso : Iso (∃ (∃ A) × B) (∃ A × B)
-∃-Idem-×-L-Iso = {!!}
+-- ∃-Idem-×-L-Iso : Iso (∃ (∃ A) × B) (∃ A × B)
+-- ∃-Idem-×-L-Iso = {!!}
 
-∃-Idem-×-R-Iso : Iso (∃ A × (∃ B)) (∃ A × B)
-∃-Idem-×-R-Iso = {!!}
+-- ∃-Idem-×-R-Iso : Iso (∃ A × (∃ B)) (∃ A × B)
+-- ∃-Idem-×-R-Iso = {!!}
 
-∃-×-Iso : Iso ((∃ A) × (∃ B)) (∃ A × B)
-∃-×-Iso = {!!}
+-- ∃-×-Iso : Iso ((∃ A) × (∃ B)) (∃ A × B)
+-- ∃-×-Iso = {!!}
 ```
 
 ## Decidable Types
@@ -536,16 +538,42 @@ Dec→Stable (yes x) = λ _ → x
 Dec→Stable (no x) = λ f → ∅-rec (f x)
 
 Dec-Idem : Dec (Dec A) → Dec A
-Dec-Idem = {!!}
+Dec-Idem (yes (yes p)) = yes p
+Dec-Idem (yes (no ¬p)) = no ¬p
+Dec-Idem (no ¬p) = no λ x → ¬p (yes x)
 
-∃-Dec : Iso (Dec (∃ A)) (∃ (Dec A))
-∃-Dec = {!!}
+isProp-Dec : isProp A → isProp (Dec A)
+isProp-Dec isPropA (yes p₁) (yes p₂) = cong yes (isPropA p₁ p₂)
+isProp-Dec isPropA (yes p) (no ¬p) = ∅-rec (¬p p)
+isProp-Dec isPropA (no ¬p) (yes p) = ∅-rec (¬p p)
+isProp-Dec isPropA (no ¬p₁) (no ¬p₂) = cong no (isProp¬ ¬p₁ ¬p₂)
 
-¬¬-Dec : Iso (¬ ¬ ∃ A) (¬ ¬ A)
-¬¬-Dec = {!!}
+∃-Dec-Iso : Iso (Dec (∃ A)) (∃ (Dec A))
+∃-Dec-Iso = propExt (isProp-Dec isProp-∃) isProp-∃ to fro
+  where
+    to : Dec (∃ A) → ∃ (Dec A)
+    to (yes p) = ∃-map yes p
+    to (no ¬p) = ∣ no (λ x → ¬p ∣ x ∣) ∣
+
+    fro-lemma : Dec A → Dec (∃ A)
+    fro-lemma (yes p) = yes ∣ p ∣
+    fro-lemma (no ¬p) = no (∃-rec isProp∅ ¬p)
+
+    fro : ∃ (Dec A) → Dec (∃ A)
+    fro = ∃-rec (isProp-Dec isProp-∃) fro-lemma
+
+¬¬-∃-Iso : Iso (¬ ¬ ∃ A) (¬ ¬ A)
+¬¬-∃-Iso = propExt isProp¬ isProp¬ to fro
+  where
+    to : ¬ ¬ ∃ A → ¬ ¬ A
+    to ¬¬∃a ¬a = ¬¬∃a (∃-rec isProp∅ ¬a)
+
+    fro : ¬ ¬ A → ¬ ¬ ∃ A
+    fro ¬¬a ¬∃a = ¬¬a (λ x → ¬∃a ∣ x ∣)
 
 Dec→SplitSupport : Dec A → (∃ A → A)
-Dec→SplitSupport = {!!}
+Dec→SplitSupport (yes p) e = p
+Dec→SplitSupport (no ¬p) e = ∅-rec (∃-rec isProp∅ ¬p e)
 ```
 
 ## Subtypes
@@ -555,6 +583,27 @@ With this definition of proposition, we can define a good notion of
 `A`, then the subtype of `A` carved out by `B` will be the type of
 pairs `Σ[ a ∈ A ] B a` whose elements are pairs `(a , b)` where
 `a : A` and `b : B a` is a witness that `B` is true of `a`.
+
+```
+isPropisEvenP : (n : ℕ) → isProp (isEvenP n)
+isPropisEvenP zero = isProp⊤
+isPropisEvenP (suc zero) = isProp∅
+isPropisEvenP (suc (suc n)) = isPropisEvenP n
+
+Evens : Type 
+Evens = Σ[ n ∈ ℕ ] isEvenP n
+
+_≡ℕ_mod_ : (n m : ℤ)(p : ℤ) → Type 
+n ≡ℕ m mod p = ∃[ d ∈ ℤ ] (d ·ℤ p ≡ n - m)
+
+_ : Type
+_ = Σ[ p ∈ ℤ × ℤ ] ((fst p) ≡ℕ (snd p) mod (pos (suc (suc zero))))
+
+data ℤmod (p : ℤ) : Type where
+  quo : ℤ → ℤmod p
+  rel : (a b : ℤ) → a ≡ℕ b mod p → quo a ≡ quo b
+  extra : (a b : ℤmod p) → isProp (a ≡ b)
+```
 
 The main lemma to prove about subtypes is that they have the same
 paths as the types they came from. That is, `(a1 , b1) ≡ (a2 , b2)` is
