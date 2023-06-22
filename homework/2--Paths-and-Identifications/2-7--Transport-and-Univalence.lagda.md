@@ -152,17 +152,27 @@ Try it yourself:
 ```
   _ : {m : A i0 × A i0 → A i0}
     → transport (λ i → A i × A i → A i) m
-    ≡ {!!}
+    ≡ λ { (a , b) →
+      let
+        a' = transport (λ i → A (~ i)) a
+        b' = transport (λ i → A (~ i)) b
+      in transport (λ i → A i) (m (a' , b'))
+      }
   _ = refl
 
   _ : {α : A i0 × B i0 → B i0}
     → transport (λ i → A i × B i → B i) α
-    ≡ {!!}
+    ≡ λ { (a , b) →
+      let
+        a' = transport (λ i → A (~ i)) a
+        b' = transport (λ i → B (~ i)) b
+      in transport (λ i → B i) (α (a' , b'))
+      }
   _ = refl
 
   _ : {y : (A i0 → A i0) → A i0}
     → transport (λ i → (A i → A i) → A i) y
-    ≡ {!!}
+    ≡ λ f → y (λ x → transport (λ i → A i) (f (transport (λ i → A (~ i)) x)))
   _ = refl
 ```
 
