@@ -160,7 +160,6 @@ Even with such a basic principle, this is already enough to start
 proving some useful equalities.
 ```
 -- Exercise
--- ∘-assoc h g f i x = ?
 ∘-assoc : (h : C → D)
           (g : B → C)
           (f : A → B)
@@ -168,12 +167,10 @@ proving some useful equalities.
 ∘-assoc h g f i x = h (g (f x))
 
 -- Exercise
--- ∘-idˡ f i x = ?
 ∘-idˡ : (f : A → B) → f ∘ (λ a → a) ≡ f
 ∘-idˡ f i x = f x
 
 -- Exercise
--- ∘-idʳ f i x = ?
 ∘-idʳ : (f : A → B) → (λ b → b) ∘ f ≡ f
 ∘-idʳ f i x = f x
 ```
@@ -298,7 +295,6 @@ The `≡` constructor has low precedence, so `f x ≡ f y` means `(f x) ≡
 
 ```
 -- Exercise: funExt for binary functions
--- funExt2 p i x y = ?
 funExt2 : {f g : A → B → C}
        (p : (x : A) (y : B) → f x y ≡ g x y)
        → f ≡ g
@@ -404,8 +400,18 @@ isomorphic to itself in a non-trivial way.
 
 ```
 -- Exercise
---  s x = ?
---  r x = ?
+not-Iso : Iso Bool Bool
+not-Iso = iso not not s r
+  where
+    s : section not not
+    s true = refl
+    s false = refl
+
+    r : retract not not
+    r true = refl
+    r false = refl
+
+-- Exercise
 sucℤ-Iso : Iso ℤ ℤ
 sucℤ-Iso = iso sucℤ predℤ s r
   where
@@ -556,7 +562,6 @@ inr b ≡⊎ inl a = ∅
 inr b1 ≡⊎ inr b2 = b1 ≡ b2
 
 -- Exercise
--- ≡iff≡⊎ x y = ?
 -- Hint: can you see a way to define the forward direction using subst?
 ≡iff≡⊎ : {A B : Type} (x y : A ⊎ B) → (x ≡ y) iffP (x ≡⊎ y)
 ≡iff≡⊎ x y = (to x y) , (fro x y)
@@ -587,4 +592,32 @@ inr b1 ≡⊎ inr b2 = b1 ≡ b2
     fro (inl a) (inr b) = ∅-rec
     fro (inr b) (inl a) = ∅-rec
     fro (inr b1) (inr b2) = cong inr
+```
+
+
+
+
+## Computing the paths in the integers
+
+```
+_≡ℤ_ : ℤ → ℤ → Type
+pos n ≡ℤ pos m = n ≡ℕ m
+pos n ≡ℤ negsuc m = ∅
+negsuc n ≡ℤ pos m = ∅
+negsuc n ≡ℤ negsuc m = n ≡ℕ m
+
+≡ℤ-refl : {a : ℤ} → a ≡ℤ a
+≡ℤ-refl {pos n} = ≡ℕ-refl n
+≡ℤ-refl {negsuc n} = ≡ℕ-refl n
+
+≡iff≡ℤ : (a b : ℤ) → (a ≡ b) iffP (a ≡ℤ b)
+≡iff≡ℤ a b = (to a b) , (fro a b)
+  where
+    to : (x y : ℤ) → (x ≡ y) → (x ≡ℤ y)
+    to x y p = subst (x ≡ℤ_) p (≡ℤ-refl {x})
+  
+    fro : (x y : ℤ) → (x ≡ℤ y) → (x ≡ y)
+    fro (pos n) (pos m) p = cong pos (≡iff≡ℕ n m .snd p)
+    fro (negsuc n) (negsuc m) p = cong negsuc (≡iff≡ℕ n m .snd p)
+
 ```
