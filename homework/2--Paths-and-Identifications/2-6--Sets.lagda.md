@@ -22,7 +22,7 @@ private
 
 ## Sets
 
-As we have seen in 2-2, paths in inductive types like `Bool`, `ℕ` and
+As we've seen in 2-2, paths in inductive types like `Bool`, `ℕ` and
 `ℤ` are equalities between elements. As a corollary, the type of paths
 `x ≡ y` between two elements `x` and `y` in these types are
 propositions --- specifically, the proposition that `x` equals `y`.
