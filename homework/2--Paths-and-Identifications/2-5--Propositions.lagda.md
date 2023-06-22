@@ -1,6 +1,5 @@
 # Homework 2-5: Propositions
 ```
--- {-# OPTIONS --allow-unsolved-metas #-}
 module homework.2--Paths-and-Identifications.2-5--Propositions where
 
 open import Cubical.Data.Sigma.Base using (Σ ; _×_)
@@ -485,13 +484,27 @@ TotallyOrderedElementSet = Σ[ F ∈ Type ] (Bool ≡ F)
 Challenge:
 ```
 -- ∃-Idem-×-L-Iso : Iso (∃ (∃ A) × B) (∃ A × B)
--- ∃-Idem-×-L-Iso = {!!}
+-- ∃-Idem-×-L-Iso = 
+--   propExt isProp-∃ isProp-∃
+--       (∃-rec isProp-∃ lemma)
+--       (∃-rec isProp-∃ λ {(a , b) → ∣ ∣ a ∣ , b ∣})
+--     where
+--       lemma : (∃ A) × B → ∃ (A × B)
+--       lemma (∣ x ∣ , b) = ∣ x  , b ∣
+--       lemma (squash x x₁ i , b) = squash (lemma (x , b)) (lemma (x₁ , b)) i
 
 -- ∃-Idem-×-R-Iso : Iso (∃ A × (∃ B)) (∃ A × B)
 -- ∃-Idem-×-R-Iso = {!!}
 
 -- ∃-×-Iso : Iso ((∃ A) × (∃ B)) (∃ A × B)
--- ∃-×-Iso = {!!}
+-- ∃-×-Iso {A = A} {B = B} = propExt (isPropx isProp-∃ isProp-∃) isProp-∃
+--   (uncurry (∃-rec (isProp→ isProp-∃)
+--   (λ a → ∃-rec isProp-∃ (λ b → ∣ a , b ∣))))
+--   (∃-rec (isPropx isProp-∃ isProp-∃) (xmap ∣_∣ ∣_∣))
+--   where: 
+--     xmap : {X X' : Type ℓ} {Y Y' : Type ℓ} (f : X → X') (g : Y → Y')
+--         → X × Y → X' × Y'
+--     xmap f g (x , y) = (f x , g y)
 ```
 
 ## Decidable Types
