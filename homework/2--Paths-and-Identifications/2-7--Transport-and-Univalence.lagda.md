@@ -171,8 +171,12 @@ Try it yourself:
   _ = refl
 
   _ : {y : (A i0 → A i0) → A i0}
-    → transport (λ i → (A i → A i) → A i) y
-    ≡ λ f → y (λ x → transport (λ i → A i) (f (transport (λ i → A (~ i)) x)))
+    → transport (λ i → (A i → A i) → A i) y 
+    ≡ λ { f →
+      let
+        f' = transport (λ i → A (~ i) → A (~ i)) f
+      in transport (λ i → A i) (y f')
+      }
   _ = refl
 ```
 
