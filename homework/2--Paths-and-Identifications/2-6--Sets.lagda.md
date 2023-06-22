@@ -30,8 +30,11 @@ propositions --- specifically, the proposition that `x` equals `y`.
 ```
 isSetBool : (x y : Bool) → isProp (x ≡ y)
 isSetBool x y =
-  let ≡BoolPath≡ = sym $ isoToPath (≡Iso≡Bool x y)
-  in subst isProp ≡BoolPath≡ (isProp-≡Bool x y)
+  let
+    f = Iso.fun (≡Iso≡Bool x y)
+    g = Iso.inv (≡Iso≡Bool x y)
+    r = Iso.leftInv (≡Iso≡Bool x y)
+  in isPropRetract f g r (isProp-≡Bool x y)
 
 isSetℕ : (x y : ℕ) → isProp (x ≡ y)
 isSetℕ x y =
