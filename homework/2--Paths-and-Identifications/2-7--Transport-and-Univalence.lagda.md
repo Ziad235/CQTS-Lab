@@ -32,7 +32,7 @@ type `Type` of types are equivalences between types.
 
 ## Transport
 
-First, we'll note that `transport p : A → B` for `p : A ≡ B` is an
+First, we will note that `transport p : A → B` for `p : A ≡ B` is an
 equivalence between `A` and `B`. We can prove this cleverly, by
 transporting the proof that the identity function is an equivalence.
 ```
