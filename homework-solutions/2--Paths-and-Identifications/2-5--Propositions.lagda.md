@@ -137,7 +137,7 @@ isProp-≤ℕ (suc n) (suc m) = isProp-≤ℕ n m
 
 On the other hand, if a type has at most one element and also has an
 element, then that element is unique. In other words, if a proposition
-has an element, then it is contractible.
+has an element, then it's contractible.
 
 ```
 Prop-with-point-isContr : isProp A → A → isContr A
