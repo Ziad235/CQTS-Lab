@@ -189,7 +189,7 @@ map at `tt`) is unique.
 ## Equivalences
 
 In set theory, a bijection between sets $A$ and $B$ is a function
-$f : A → B$ where for every $b ∈ B$, there is a unique $a ∈ A$ such
+$f : A → B$ where for every $b ∈ B$, there's a unique $a ∈ A$ such
 that $f(a) = b$. We can define an analogous notion in type theory:
 
 ```
