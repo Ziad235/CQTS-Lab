@@ -27,7 +27,7 @@ private
 
 https://1lab.dev/1Lab.Path.html#transport
 
-In this lecture, we will revisit `transport`, and see that paths in the
+In this lecture, we'll revisit `transport`, and see that paths in the
 type `Type` of types are equivalences between types.
 
 ## Transport
