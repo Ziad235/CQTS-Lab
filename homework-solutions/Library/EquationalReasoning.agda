@@ -1,9 +1,9 @@
-module homework.Library.EquationalReasoning where
+module homework-solutions.Library.EquationalReasoning where
 
 open import Cubical.Core.Primitives
 
-open import homework.2--Paths-and-Identifications.2-1--Paths
-open import homework.2--Paths-and-Identifications.2-4--Composition-and-Filling
+open import homework-solutions.2--Paths-and-Identifications.2-1--Paths
+open import homework-solutions.2--Paths-and-Identifications.2-4--Composition-and-Filling
 
 private
   variable
@@ -41,3 +41,4 @@ _ ≡⟨ x≡y ⟩≡⟨ y≡z ⟩ z≡w = x≡y ∙∙ y≡z ∙∙ z≡w
 
 _∎ : (x : A) → x ≡ x
 _ ∎ = refl
+
