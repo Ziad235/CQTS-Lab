@@ -28,7 +28,7 @@ which we know what would constitute a proof. To prove that a number
 suffice to prove that the number is even, so the statement "`n` is
 even" is a proposition: we know what it would mean to prove it.
 
-In this lecture, we will give a first pass at a type theoretic
+In this lecture, we'll give a first pass at a type theoretic
 formalization of the notion of propositions. One way to formalize a
 proposition is as a function to the Booleans. If `P : A → Bool` is
 such a function, then we think of it as describing the proposition
