@@ -22,7 +22,7 @@ private
 
 ## Sets
 
-As we've seen in 2-2, paths in inductive types like `Bool`, `ℕ` and
+As we have seen in 2-2, paths in inductive types like `Bool`, `ℕ` and
 `ℤ` are equalities between elements. As a corollary, the type of paths
 `x ≡ y` between two elements `x` and `y` in these types are
 propositions --- specifically, the proposition that `x` equals `y`.
@@ -30,11 +30,8 @@ propositions --- specifically, the proposition that `x` equals `y`.
 ```
 isSetBool : (x y : Bool) → isProp (x ≡ y)
 isSetBool x y =
-  let
-    f = Iso.fun (≡Iso≡Bool x y)
-    g = Iso.inv (≡Iso≡Bool x y)
-    r = Iso.leftInv (≡Iso≡Bool x y)
-  in isPropRetract f g r (isProp-≡Bool x y)
+  let ≡BoolPath≡ = sym $ isoToPath (≡Iso≡Bool x y)
+  in subst isProp ≡BoolPath≡ (isProp-≡Bool x y)
 
 isSetℕ : (x y : ℕ) → isProp (x ≡ y)
 isSetℕ x y =
@@ -242,7 +239,7 @@ PathPIsoPath A x y .Iso.leftInv q k i =
 With this isomorphism in hand, we can revisit the path types in `Σ` types.
 ```
 -- We need a few lemmas about isomorphisms: they compose and can be inverted!
-compIso : {ℓ'' ℓ''' : _} {B : Type ℓ''} {C : Type ℓ'''}
+compIso : {B : Type ℓ₂} {C : Type ℓ₃}
         → Iso A B → Iso B C → Iso A C
 compIso {A = A} {C = C} i j = iso fun inv rightInv leftInv
   where
@@ -347,6 +344,46 @@ contains a point `base` and a path `loop` which goes from `base` to
 data S¹ : Type where
   base : S¹
   loop : base ≡ base
+
+data Bouquet (A : Type ℓ) : Type ℓ where
+  pot : Bouquet A
+  bulb : (a : A) → Bouquet A
+  stem : (a : A) → pot ≡ bulb a
+  flower : (a : A) → bulb a ≡ bulb a
+
+ΩBouquet : (A : Type ℓ) → Type ℓ
+ΩBouquet A = (pot {A = A} ≡ pot)
+
+data InvList (A : Type ℓ) : Type ℓ where
+  ε : InvList A
+  _:∙:_ : (a : A) → InvList A → InvList A
+  _⁻¹:∙:_ : (a : A) → InvList A → InvList A
+  section-law : (a : A) (L : InvList A)  → (a :∙: (a ⁻¹:∙: L)) ≡ L  -- section-law a : section (a :∙:_) (a ⁻¹:∙:_)
+  retract-law : (a : A) (L : InvList A)  → (a ⁻¹:∙: (a :∙: L)) ≡ L  -- retract-law a : retract (a :∙:_) (a ⁻¹:∙:_)
+  is-set : isSet (InvList A)
+
+_+++_ : {A : Type ℓ} → InvList A → InvList A → InvList A
+ε +++ L' = L'
+(a :∙: L) +++ L' = a :∙: (L +++ L')
+(a ⁻¹:∙: L) +++ L' = a ⁻¹:∙: (L +++ L')
+section-law a L i +++ L' = section-law a (L +++ L') i
+retract-law a L i +++ L' = retract-law a (L +++ L') i
+is-set L L₁ p q i j +++ L' = is-set (L +++ L') (L₁ +++ L') (λ j → p j +++ L') (λ j → q j +++ L') i j  
+
+{-
+inverse : {A : Type ℓ} → InvList A → InvList A
+inverse ε = ε
+inverse (a :∙: L) = (inverse L) +++ (a ⁻¹:∙: ε)
+inverse (a ⁻¹:∙: L) = (inverse L) +++ (a :∙: ε)
+inverse (section-law a L i) = {!!}
+inverse (retract-law a L i) = {!!}
+inverse (is-set L L₁ x y i i₁) = {!!}
+
+
+--- using encode-decode
+one-of-our-theorems : {A : Type ℓ} → Iso (ΩBouquet A) (InvList A)
+one-of-our-theorems = {!!}
+-}
 ```
 
 To show that `S¹` is not a set, we can define its "double cover" - a
