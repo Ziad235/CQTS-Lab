@@ -25,7 +25,7 @@ isContr⊤ = tt , λ {tt → refl}
 fiber : ∀ {ℓ ℓ'} {A : Type ℓ} {B : Type ℓ'} (f : A → B) (y : B) → Type (ℓ-max ℓ ℓ')
 fiber {A = A} f y = Σ[ x ∈ A ] f x ≡ y
 
--- Helper function for constructing equivalences from pairs (f,g) that cancel each other up to definitional
+-- Helper function for constructing equivalences from pairs (f,g) that cancel each other, up to definitional
 -- equality. For such (f,g), the result type simplifies to isContr (fiber f b).
 strictContrFibers : ∀ {ℓ ℓ'} {A : Type ℓ} {B : Type ℓ'} {f : A → B} (g : B → A) (b : B)
   → Σ[ t ∈ fiber f (f (g b)) ]
